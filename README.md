@@ -14,5 +14,5 @@ g++ 2DIsing.cpp -I ./ -o a.out
 [4] Generate output file:
 output_L_{}.txt
 
-One can plot Binder ratio v.s. T, and find that the curves from different sizes of lattice cross at T = 2.26 ~ 2.27.
+One can plot Binder ratio v.s. T, and find that the curves from different sizes of lattice cross at T = 2.26 ~ 2.27, where the analytic critical T is 2.269.
 ![Binder ratios v.s. T](/2D_Ising_binder.png)
