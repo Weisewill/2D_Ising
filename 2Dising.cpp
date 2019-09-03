@@ -20,8 +20,8 @@ using namespace std;
 // T_min: minimum value of T.
 // T_max: maximum value of T.
 // T_step: increment of T.
-#define L 10
-#define B 0
+#define _L 10
+#define _B 0
 #define T_sweep 1e5
 #define M_sweep 3e5
 #define T_min 0.05
@@ -30,7 +30,7 @@ using namespace std;
 
 void print_result(Ising2D model, ofstream& myfile, double T) {
     
-    double N = (double) (L*L); // lattice size
+    double N = (double) (_L*_L); // lattice size
     double averageE, averageEsq, averageChi, averageChisq, C, Chi;
     double averagemsq, averagemquad;
     double binder;
@@ -53,15 +53,15 @@ int main() {
     std::cout.precision(7);
     
     ofstream myfile;
-    myfile.open ("output_L_" + std::to_string(L) + ".txt");
-    std::cout << "Start L = " << L << endl;
+    myfile.open ("output_L_" + std::to_string(_L) + ".txt");
+    std::cout << "Start L = " << _L << endl;
     
     srand (time(NULL));
   
     for (T=T_min; T<=T_max; T=T+T_step) {
-        model.T_ = T;
-        model.L_ = L;
-        model.B_ = B;
+        model.T = T;
+        model.L = _L;
+        model.B = _B;
         model.init();
         std::cout << "Start Thermalization, T = "<< T << endl;
         model.Thermalization(T_sweep);

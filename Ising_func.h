@@ -12,9 +12,10 @@ using namespace std;
 // 2D Ising model with J = 1, k_b = 1;
 class Ising2D {
     public:
-        double T_;
-        int L_;
-        double B_;
+        Ising2D();
+        double T;
+        int L;
+        double B;
         int **bond, **S;
         double E;
         double Etot;
@@ -39,8 +40,8 @@ class Ising2D {
 
 class neighbors {
     public:
-        int iloc_, jloc_;
-        int right_, up_, left_, down_;
+        int iloc, jloc;
+        int right, up, left, down;
         void find_neighbors(int);
 };
 
@@ -50,22 +51,22 @@ void Ising2D::growCluster(int i, int j, int clusterspin) {
     S[i][j] = - S[i][j];
     
     neighbors N;
-    N.iloc_ = i; N.jloc_ = j;
-    N.find_neighbors(L_);
+    N.iloc = i; N.jloc = j;
+    N.find_neighbors(L);
     
-    if(bond[i][N.up_]==0)
-    judgeCluster(i,N.up_,clusterspin);
-    if(bond[N.right_][j]==0)
-    judgeCluster(N.right_,j,clusterspin);
-    if(bond[i][N.down_]==0)
-    judgeCluster(i,N.down_,clusterspin);
-    if(bond[N.left_][j]==0)
-    judgeCluster(N.left_,j,clusterspin);
+    if(bond[i][N.up]==0)
+    judgeCluster(i,N.up,clusterspin);
+    if(bond[N.right][j]==0)
+    judgeCluster(N.right,j,clusterspin);
+    if(bond[i][N.down]==0)
+    judgeCluster(i,N.down,clusterspin);
+    if(bond[N.left][j]==0)
+    judgeCluster(N.left,j,clusterspin);
 }
 
 void Ising2D::judgeCluster(int i, int j, int clusterspin){
     double r;
-    double addProb = 1. - exp(-2./T_);
+    double addProb = 1. - exp(-2./T);
     if(S[i][j] == clusterspin) {
         r = rand();
         r = r / RAND_MAX;
@@ -77,36 +78,65 @@ void Ising2D::judgeCluster(int i, int j, int clusterspin){
 double Ising2D::calculate_energy(int i, int j){
     
     neighbors N;
-    N.iloc_ = i; N.jloc_ = j;
-    N.find_neighbors(L_);
+    N.iloc = i; N.jloc = j;
+    N.find_neighbors(L);
     
     //Calculate energy of 4 adjecent bonds of S[i][j]
-    E = - S[i][j]*( S[N.right_][j] + S[i][N.up_] + S[i][N.down_] + S[N.left_][j]) - B_*S[i][j];
+    E = - S[i][j]*( S[N.right][j] + S[i][N.up] + S[i][N.down] + S[N.left][j]) - B*S[i][j];
     return E;
 }
 
-void neighbors::find_neighbors(int L_){
+void neighbors::find_neighbors(int L){
     // This function find the neighbors of a site at (i, j)
     // w/ periodic boundary condition.
-    right_ = iloc_ + 1; up_ = jloc_ + 1;
-    left_ = iloc_ - 1; down_ = jloc_ - 1;
-    if ( right_ == L_ && up_ == L_ ){
-        right_ = 0; up_ = 0;
+    right = iloc + 1; up = jloc + 1;
+    left = iloc - 1; down = jloc - 1;
+    if ( right == L && up == L ){
+        right = 0; up = 0;
     }
-    else if ( right_ == L_ && up_ != L_ ){
-        right_ = 0;
+    else if ( right == L && up != L ){
+        right = 0;
     }
-    else if ( right_ != L_ && up_ == L_ ){
-        up_ = 0;
+    else if ( right != L && up == L ){
+        up = 0;
     }
-    if ( iloc_ == 0 && jloc_ == 0 ){
-        left_ = L_ - 1; down_ = L_ - 1;
+    if ( iloc == 0 && jloc == 0 ){
+        left = L - 1; down = L - 1;
     }
-    else if ( iloc_ == 0 && jloc_ != 0 ){
-        left_ = L_ - 1;
+    else if ( iloc == 0 && jloc != 0 ){
+        left = L - 1;
     }
-    else if ( iloc_ != 0 && jloc_ == 0 ){
-        down_ = L_ - 1;
+    else if ( iloc != 0 && jloc == 0 ){
+        down = L - 1;
+    }
+}
+
+Ising2D::Ising2D() {
+    int i, j;
+    L = 10;
+    B = 0;
+    T = 2.0;
+    E = 0;
+    Etot = 0;
+    Esquare = 0;
+    Chitot = 0;
+    sqChi = 0;
+    msq = 0;
+    mquad = 0;
+    bond = new int*[L];
+    for(int i = 0; i < L; ++i)
+        bond[i] = new int[L];
+    S = new int*[L];
+    for(int i = 0; i < L; ++i)
+        S[i] = new int[L];
+    for (i=0;i<L;i++) {
+        for (j=0;j<L;j++) {
+            S[i][j] = rand() % 2;
+            bond[i][j] = 0;
+            if (S[i][j] == 0) {
+                S[i][j] = - 1;
+            }
+        }
     }
 }
 
@@ -119,14 +149,14 @@ void Ising2D::init() {
     sqChi = 0;
     msq = 0;
     mquad = 0;
-    bond = new int*[L_];
-    for(int i = 0; i < L_; ++i)
-        bond[i] = new int[L_];
-    S = new int*[L_];
-    for(int i = 0; i < L_; ++i)
-        S[i] = new int[L_];
-    for (i=0;i<L_;i++) {
-        for (j=0;j<L_;j++) {
+    bond = new int*[L];
+    for(int i = 0; i < L; ++i)
+    bond[i] = new int[L];
+    S = new int*[L];
+    for(int i = 0; i < L; ++i)
+    S[i] = new int[L];
+    for (i=0;i<L;i++) {
+        for (j=0;j<L;j++) {
             S[i][j] = rand() % 2;
             bond[i][j] = 0;
             if (S[i][j] == 0) {
@@ -144,7 +174,7 @@ void Ising2D::metropolis(int i, int j){
     deltaE = Enew - Eold;
     r = rand();
     r = r / RAND_MAX;
-    Pjudge = exp(-deltaE/T_) / ( 1. + exp(-deltaE/T_) ) ;
+    Pjudge = exp(-deltaE/T) / ( 1. + exp(-deltaE/T) ) ;
     if (Pjudge >= r) {
     }
     else {
@@ -155,19 +185,19 @@ void Ising2D::metropolis(int i, int j){
 void Ising2D::oneMonteCarloStep() {
     int i, j, k;
     //srand (time(NULL));
-    for (i=0;i<L_;i++) {
-        for (j=0;j<L_;j++) {
+    for (i=0;i<L;i++) {
+        for (j=0;j<L;j++) {
             metropolis(i, j);
         }
     }
     // Wolff algorithm
     // Reset
-    for (i=0;i<L_;i++)
-    for (j=0;j<L_;j++)
+    for (i=0;i<L;i++)
+    for (j=0;j<L;j++)
     bond[i][j] = 0;
     // Choose a random site.
-    i = rand() % L_;
-    j = rand() % L_;
+    i = rand() % L;
+    j = rand() % L;
     growCluster(i,j,S[i][j]);
 }
 
@@ -181,17 +211,17 @@ void Ising2D::Thermalization(int T_sweep){
 
 void Ising2D::Measurement(int M_sweep, bool print_config, ofstream& myfile) {
     int count, i, j, k;
-    double Nd = (double) (L_*L_);
+    double Nd = (double) (L*L);
     neighbors N;
     double Chitemp = 0, Etottemp = 0, msqtemp = 0, mquadtemp = 0, mtemp;
     for (k=0;k<M_sweep;k++) {
         oneMonteCarloStep();
         if ( k % 10 == 0) {
-            for (i=0;i<L_;i++) {
-                for (j=0;j<L_;j++) {
-                    N.iloc_ = i; N.jloc_ = j;
-                    N.find_neighbors(L_);
-                    Etottemp += - S[i][j]*S[N.right_][j] - S[i][j]*S[i][N.up_] - B_*S[i][j];
+            for (i=0;i<L;i++) {
+                for (j=0;j<L;j++) {
+                    N.iloc = i; N.jloc = j;
+                    N.find_neighbors(L);
+                    Etottemp += - S[i][j]*S[N.right][j] - S[i][j]*S[i][N.up] - B*S[i][j];
                     Chitemp += S[i][j];
                 }
             }
@@ -215,10 +245,10 @@ void Ising2D::Measurement(int M_sweep, bool print_config, ofstream& myfile) {
 void Ising2D::print_lattice(ofstream& myfile) {
     int i, j;
     int label;
-    label = ( T_ < T_c) ? 1 : 0; // 1 for ordered phase; 0 for non-ordered phase.
+    label = ( T < T_c) ? 1 : 0; // 1 for ordered phase; 0 for non-ordered phase.
     myfile << label << '\t';
-    for(i=0; i<L_; i++)
-    for(j=0; j<L_; j++)
+    for(i=0; i<L; i++)
+    for(j=0; j<L; j++)
     myfile << S[i][j] << '\t';
     myfile << endl;
 }
