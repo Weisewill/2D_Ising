@@ -9,7 +9,7 @@
 #include <time.h>
 #include <fstream>
 #include <array>
-#include <Ising_func.h>
+#include "Ising_func.h"
 
 using namespace std;
 // Define constant parameters.
@@ -20,13 +20,13 @@ using namespace std;
 // T_min: minimum value of T.
 // T_max: maximum value of T.
 // T_step: increment of T.
-#define _L 10
-#define _B 0
-#define T_sweep 1e5
-#define M_sweep 3e5
-#define T_min 0.05
-#define T_max 4.0
-#define T_step 0.05
+const int _L = 10;
+const int _B = 0;
+const int T_sweep = 1e5;
+const int M_sweep = 3e5;
+const double T_min = 0.05;
+const double T_max = 4.0;
+const double T_step = 0.05;
 
 void print_result(Ising2D model, ofstream& myfile, double T) {
     
